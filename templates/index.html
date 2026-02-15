@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iris Data Classification</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .main-container {
+            display: flex;
+            width: 1000px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .left {
+            width: 50%;
+            padding: 30px;
+        }
+
+        .right {
+            width: 50%;
+            background: #f7f9fc;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #00c6ff;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3fcef;
+            color: #2e7d32;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        pre {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+        <h1>Iris Data Classification</h1>
+
+        <form method="post">
+
+            <label>Sepal Length (cm)</label>
+            <input type="number" step="any" name="SepalLengthCm" required>
+
+            <label>Sepal Width (cm)</label>
+            <input type="number" step="any" name="SepalWidthCm" required>
+
+            <label>Petal Length (cm)</label>
+            <input type="number" step="any" name="PetalLengthCm" required>
+
+            <label>Petal Width (cm)</label>
+            <input type="number" step="any" name="PetalWidthCm" required>
+
+            <label>Select Algorithm</label>
+            <select name="algorithm" required>
+                <option value="knn">KNN</option>
+                <option value="nb">Naive Bayes</option>
+            </select>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result">
+            Predicted: {{ prediction }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+
+        {% if performance %}
+            <h3>Test Performance ({{ selected_model.upper() }})</h3>
+
+            <p><strong>Accuracy:</strong> {{ performance['accuracy_score'] }}</p>
+
+            <h4>Confusion Matrix</h4>
+            <pre>{{ performance['confusion_matrix'] }}</pre>
+
+            <h4>Classification Report</h4>
+
+            <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse: collapse;">
+                <tr style="background-color:#e0e0e0;">
+                    <th>Class</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1-Score</th>
+                    <th>Support</th>
+                </tr>
+
+                {% for key, value in performance['classification_report'].items() %}
+                    {% if key not in ['accuracy'] %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ value['precision'] }}</td>
+                            <td>{{ value['recall'] }}</td>
+                            <td>{{ value['f1-score'] }}</td>
+                            <td>{{ value['support'] }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
